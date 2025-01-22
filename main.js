@@ -216,3 +216,30 @@ startBtn.addEventListener("click", () => {
     startGame();
     chosenWord = wordList[Math.floor(Math.random() * wordList.length)]; // RAndomize a new word
 });
+
+
+// Funktion för att lägga till nytt ord till ordlistan
+function addNewWord() {
+    const newWordInput = document.getElementById('new-word-input');
+    const newWord = newWordInput.value.trim().toLowerCase();
+
+    // Kontrollera om ordet är giltigt
+    if (newWord && !wordList.includes(newWord)) {
+        wordList.push(newWord);
+        alert("Ordet har lagts till!");
+    } else {
+        alert("Ange ett giltigt ord som inte redan finns i listan.");
+    }
+
+    // Rensa input-fältet
+    newWordInput.value = '';
+}
+
+// Starta spelet när sidan laddas
+window.onload = startGame;
+
+// Lägg till eventlyssnare på knappen för gissningar
+document.getElementById('guess-button').addEventListener('click', handleGuess);
+
+// Lägg till eventlyssnare på knappen för att lägga till ord
+document.getElementById('add-word-button').addEventListener('click', addNewWord);
