@@ -1,28 +1,53 @@
 <!DOCTYPE html>
 <html lang="sv">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hänga Gubbe</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <h1>Versionshantering och strategier med Git</h1>
-    <p>Gissa bokstäverna i ordet!</p>
-    <button id="start-btn" class="button">START NEW GAME</button>
-    <pre id="hangman-display"></pre>
-    <div id="word-display" class="word-display">_ _ _ _ _</div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Hänga Gubbe</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <header><h1>Versionshantering och strategier med Git</h1></header>
 
-    <input
-      type="text"
-      id="letter-input"
-      placeholder="Gissa en bokstav"
-      maxlength="1"
-    />
-    <button id="guess-button" class="button">Gissa</button>
+        <main>
+            <p>Gissa bokstäverna i ordet!</p>
+            <button id="start-btn" class="button">START NEW GAME</button>
+            <div class="game-container">
+                <div class="player1-container player-container">
+                    <div class="player-header"><h2>Player 1</h2></div>
+                    <pre id="hangman-display" class="hangman-container"></pre>
+                    <div id="word-display" class="word-display">_ _ _ _ _</div>
+                    <div class="input-wrapper">
+                        <input
+                            type="text"
+                            id="letter-input"
+                            placeholder="Gissa en bokstav"
+                            maxlength="1"
+                        />
+                        <button id="guess-button" class="button">Gissa</button>
+                    </div>
+                    <div id="message">Vänta, turen är på gång...</div>
+                </div>
+                <div class="player2-container player-container">
+                    <div class="player-header"><h2>Player 2</h2></div>
 
-    <div id="message">Vänta, turen är på gång...</div>
+                    <pre id="hangman-display" class="hangman-container"></pre>
+                    <div id="word-display" class="word-display">_ _ _ _ _</div>
+                    <div class="input-wrapper">
+                        <input
+                            type="text"
+                            id="letter-input"
+                            placeholder="Gissa en bokstav"
+                            maxlength="1"
+                        />
+                        <button id="guess-button" class="button">Gissa</button>
+                    </div>
 
-    <script src="main.js"></script>
-  </body>
+                    <div id="message">Vänta, turen är på gång...</div>
+                </div>
+            </div>
+        </main>
+
+        <script src="main.js"></script>
+    </body>
 </html>
