@@ -130,8 +130,8 @@ function startGame() {
   document.getElementById("letter-input").disabled = false;
 }
 
-// // Starta spelet när sidan laddas
-// window.onload = startGame;
+// Starta spelet när sidan laddas
+window.onload = startGame;
 
 // Lägg till eventlyssnare på knappen för gissningar
 document.getElementById("guess-button").addEventListener("click", handleGuess);
@@ -151,9 +151,6 @@ console.log(`Spelet börjar! ${startingPlayer} är först.`); // Hänga med i tu
 const startBtn = document.getElementById("start-btn"); // Variable for Start new game-button
 // What happens when a user presses the Start new game button
 startBtn.addEventListener("click", () => {
-  guessedLetters = []; // Reset guessed letters
-  wrongGuesses = 0; // Reset number of wrong guesses
-  updateHangman(); // Update hangman figure with no wrong guesses
-  displayWord(); // Reset the diplayed word
+  startGame();
   chosenWord = wordList[Math.floor(Math.random() * wordList.length)]; // RAndomize a new word
 });
