@@ -6,7 +6,7 @@ const wordList = [
     "päron",
     "melon",
     "apelsin",
-    "kiwi"
+    "kiwi",
 ];
 
 const hangmanStages = [
@@ -65,80 +65,78 @@ const hangmanStages = [
     / \
      |
      -----
-    `
+    `,
 ];
 
 let wrongGuesses = 0; // Tracks wrong guesses
 const maxWrongGuesses = hangmanStages.length;
 
 function updateHangman() {
-    const hangmanElement = document.getElementById('hangman-display');
+    const hangmanElement = document.getElementById("hangman-display");
     hangmanElement.textContent = hangmanStages[wrongGuesses];
 }
 
-
 let chosenWord = wordList[Math.floor(Math.random() * wordList.length)];
-let guessedLetters = []; 
-let displayedWord = []; 
-
+let guessedLetters = [];
+let displayedWord = [];
 
 function displayWord() {
-    displayedWord = chosenWord.split('').map(letter => 
-        guessedLetters.includes(letter) ? letter : '_'
-    );
-    document.getElementById('word-display').textContent = displayedWord.join(' ');
+    displayedWord = chosenWord
+        .split("")
+        .map((letter) => (guessedLetters.includes(letter) ? letter : "_"));
+    document.getElementById("word-display").textContent =
+        displayedWord.join(" ");
 }
 
-
 function handleGuess() {
-    const letterInput = document.getElementById('letter-input');
+    const letterInput = document.getElementById("letter-input");
     const guess = letterInput.value.toLowerCase();
 
     if (guess && guess.length === 1 && !guessedLetters.includes(guess)) {
         guessedLetters.push(guess);
         if (chosenWord.includes(guess)) {
-            displayWord(); 
+            displayWord();
         } else {
             alert("Fel gissning!");
             wrongGuesses++;
             updateHangman();
 
             if (wrongGuesses >= maxWrongGuesses) {
-                document.getElementById('message').textContent = `Du förlorade! Ordet var: ${chosenWord}`;
-                document.getElementById('guess-button').disabled = true;
-                document.getElementById('letter-input').disabled = true;
+                document.getElementById(
+                    "message"
+                ).textContent = `Du förlorade! Ordet var: ${chosenWord}`;
+                document.getElementById("guess-button").disabled = true;
+                document.getElementById("letter-input").disabled = true;
             }
         }
-        letterInput.value = ''; 
+        letterInput.value = "";
     } else {
         alert("Ange en giltig bokstav som du inte redan har gissat.");
     }
 
-    if (!displayedWord.includes('_')) {
-        document.getElementById('message').textContent = "Grattis! Du har gissat ordet!";
+    if (!displayedWord.includes("_")) {
+        document.getElementById("message").textContent =
+            "Grattis! Du har gissat ordet!";
     }
 }
 
 // Funktion för att starta spelet
 function startGame() {
-  
     guessedLetters = [];
     wrongGuesses = 0;
     displayWord();
     updateHangman();
-    document.getElementById('message').textContent = "Vänta, turen är på gång...";
-    document.getElementById('guess-button').disabled = false;
-    document.getElementById('letter-input').disabled = false;
+    document.getElementById("message").textContent =
+        "Vänta, turen är på gång...";
+    document.getElementById("guess-button").disabled = false;
+    document.getElementById("letter-input").disabled = false;
 }
 
 // Starta spelet när sidan laddas
 window.onload = startGame;
 
 // Lägg till eventlyssnare på knappen för gissningar
-document.getElementById('guess-button').addEventListener('click', handleGuess);
-
-
-
+document.getElementById("guess-button").addEventListener("click", handleGuess);
 
 // Funktion för att slumpa startspelare
 function choosStartingPlayer(players) {
@@ -150,9 +148,11 @@ function choosStartingPlayer(players) {
 
 const players = ["Player 1", "Player 2"]; // Exempel på spelare
 const startingPlayer = choosStartingPlayer(players); //Slumpa och visa vem som börjar
-console.log(`Spelet börjar! ${startingPlayer} är först.`); // Hänga med i turordningen i spelet 
+console.log(`Spelet börjar! ${startingPlayer} är först.`); // Hänga med i turordningen i spelet
 
-
-
-
-
+const startBtn = document.getElementById("start-btn"); // Variable for Start new game-button
+// What happens when a user presses the Start new game button
+startBtn.addEventListener("click", () => {
+    startGame();
+    chosenWord = wordList[Math.floor(Math.random() * wordList.length)]; // RAndomize a new word
+});
