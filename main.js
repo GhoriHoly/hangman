@@ -52,7 +52,7 @@ const hangmanStages = [
     `,
     `
      O  
-    /|\
+    /|\\
      |  
      |  
      |
@@ -60,9 +60,9 @@ const hangmanStages = [
     `,
     `
      O  
-    /|\
+    /|\\
      |  
-    / \
+    / \\
      |
      -----
     `
