@@ -1,33 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style/style.css" />
-    <script src="main.js" defer></script>
-    <title>Document</title>
+    <title>Hänga Gubbe</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header><h1>Hangman</h1></header>
-    <main>
-      <div id="start-screen">
-        <button id="start-btn">START A NEW GAME</button>
-      </div>
-      <div id="game-screen" class="hide-game-screen">
-        <div id="player1" class="player">
-          <h2>player1</h2>
-          <div id="hangman-player1" class="hangman-container">
-            hangman-figure-player1
-          </div>
-        </div>
-        <div id="player2" class="player">
-          <h2>player2</h2>
-          <div id="hangman-player2" class="hangman-container">
-            hangman-figure-player2
-          </div>
-        </div>
-      </div>
-    </main>
-    <footer></footer>
+    <h1>Versionshantering och strategier med Git</h1>
+    <p>Gissa bokstäverna i ordet!</p>
+    <button id="start-btn" class="button">START NEW GAME</button>
+    <pre id="hangman-display"></pre>
+    <div id="word-display" class="word-display">_ _ _ _ _</div>
+
+    <input
+      type="text"
+      id="letter-input"
+      placeholder="Gissa en bokstav"
+      maxlength="1"
+    />
+    <button id="guess-button" class="button">Gissa</button>
+
+    <div id="message">Vänta, turen är på gång...</div>
+
+    <script src="main.js"></script>
   </body>
 </html>
