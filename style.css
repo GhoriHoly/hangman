@@ -103,3 +103,22 @@ main {
     justify-content: space-evenly;
     margin: 1rem;
 }
+
+/* Stil för formuläret för att lägga till ord */
+#add-word-form {
+    margin-top: 20px;
+}
+
+#new-word-input {
+    padding: 10px;
+    font-size: 18px;
+    width: 150px;
+    text-align: center;
+}
+
+#add-word-button {
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 10px;
+}
