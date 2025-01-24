@@ -28,14 +28,18 @@ let player1 = {
     guessedLetters: [], // Stores the player's guessed letters
     displayedWord: [], // Representation of the word, underscores or correctly guessed letters
     wrongGuesses: 0, // Tracks number of wrong guesses
-    addWrongGuess: this.wrongGuesses++,
+    addWrongGuess: function () {
+        this.wrongGuesses++;
+    },
 };
 let player2 = {
     chosenWord: wordList[Math.floor(Math.random() * wordList.length)], //Randomizes the player's word
     guessedLetters: [], // Stores the player's guessed letters
     displayedWord: [], // Representation of the word, underscores or correctly guessed letters
     wrongGuesses: 0, // Tracks number of wrong guesses
-    addWrongGuess: this.wrongGuesses++,
+    addWrongGuess: function () {
+        this.wrongGuesses++;
+    },
 };
 
 //Initialize each player, used when starting/resetting game, resetting the variables and randomizing a new word
@@ -45,14 +49,20 @@ function initPlayers() {
         guessedLetters: [], // Stores the player's guessed letters
         displayedWord: [], // Representation of the word, underscores or correctly guessed letters
         wrongGuesses: 0, // Tracks number of wrong guesses
-        addWrongGuess: this.wrongGuesses++,
+        wrongGuesses: 0, // Tracks number of wrong guesses
+        addWrongGuess: function () {
+            this.wrongGuesses++;
+        },
     };
     player2 = {
         chosenWord: wordList[Math.floor(Math.random() * wordList.length)], //Randomizes the player's word
         guessedLetters: [], // Stores the player's guessed letters
         displayedWord: [], // Representation of the word, underscores or correctly guessed letters
         wrongGuesses: 0, // Tracks number of wrong guesses
-        addWrongGuess: this.wrongGuesses++,
+        wrongGuesses: 0, // Tracks number of wrong guesses
+        addWrongGuess: function () {
+            this.wrongGuesses++;
+        },
     };
 }
 
@@ -170,7 +180,9 @@ function handleGuess() {
             displayWord();
         } else {
             alert("Fel gissning!");
-            playerData.addWrongGuess;
+            playerData.addWrongGuess();
+            console.log(player1.wrongGuesses);
+            console.log(player2.wrongGuesses);
             updateHangman();
 
             if (playerData.wrongGuesses >= maxWrongGuesses) {
