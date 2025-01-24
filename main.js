@@ -2,14 +2,14 @@
 const wordList = [
     "banan",
     "äpple",
-    "jordgubbe",
+    // "jordgubbe",
     "päron",
     "melon",
     "apelsin",
     "kiwi",
 ];
 
-// Swtich the current player
+// Switch the current player
 function switchCurrentPlayer() {
     if (currentPlayer == players[0]) {
         currentPlayer = players[1];
@@ -52,7 +52,6 @@ function initPlayers() {
         guessedLetters: [], // Stores the player's guessed letters
         displayedWord: [], // Representation of the word, underscores or correctly guessed letters
         wrongGuesses: 0, // Tracks number of wrong guesses
-        wrongGuesses: 0, // Tracks number of wrong guesses
         addWrongGuess: function () {
             this.wrongGuesses++;
         },
@@ -62,7 +61,6 @@ function initPlayers() {
         chosenWord: wordList[Math.floor(Math.random() * wordList.length)], //Randomizes the player's word
         guessedLetters: [], // Stores the player's guessed letters
         displayedWord: [], // Representation of the word, underscores or correctly guessed letters
-        wrongGuesses: 0, // Tracks number of wrong guesses
         wrongGuesses: 0, // Tracks number of wrong guesses
         addWrongGuess: function () {
             this.wrongGuesses++;
@@ -154,11 +152,24 @@ const hangmanStages = [
 
 const maxWrongGuesses = hangmanStages.length; // Maximum number of wrong guesses
 
-function updateHangman() {
-    let playerData = getCurrentPlayerData(currentPlayer); // Fetch current player data
+// Checks how many letters in a word are not guessed yet,
+// used in updateHangman() to calculate stage of hangman figure
+function unknownLettersLeftInWord(word) {
+    let number = 0;
+    for (let char of word) {
+        if (char == "_") {
+            number++;
+        }
+    }
+    return number;
+}
 
-    console.log("från hangman");
+function updateHangman(player) {
+    let playerData = player; // Fetch current player data
     let drawOnPlayer;
+    let lettersLeft =
+        hangmanStages.length -
+        unknownLettersLeftInWord(playerData.displayedWord);
     if (playerData.name == "player1") {
         drawOnPlayer = "player2";
     }
@@ -168,9 +179,10 @@ function updateHangman() {
     let hangmanElement = document.getElementById(
         `${drawOnPlayer}-hangman-display`
     ); // Update hangman figure for the opposite player
-    console.log(`${drawOnPlayer}-hangman-display`);
-
-    hangmanElement.textContent = hangmanStages[playerData.wrongGuesses];
+    console.log(lettersLeft);
+    if (lettersLeft != hangmanStages.length) {
+        hangmanElement.textContent = hangmanStages[lettersLeft];
+    }
 }
 
 function displayWord() {
@@ -180,7 +192,6 @@ function displayWord() {
         .map((letter) =>
             playerData.guessedLetters.includes(letter) ? letter : "_"
         );
-
     document.getElementById(`${currentPlayer}-word-display`).textContent =
         playerData.displayedWord.join(" ");
 }
@@ -189,7 +200,6 @@ function handleGuess() {
     let playerData = getCurrentPlayerData(currentPlayer); // Fetch current player data
     const letterInput = document.getElementById("letter-input");
     const guess = letterInput.value.toLowerCase();
-
     if (
         guess &&
         guess.length === 1 &&
@@ -197,14 +207,11 @@ function handleGuess() {
     ) {
         playerData.guessedLetters.push(guess);
         if (playerData.chosenWord.includes(guess)) {
-            updateHangman();
+            updateHangman(playerData);
             displayWord();
         } else {
             alert("Fel gissning!");
             playerData.addWrongGuess();
-
-            console.log(player1.wrongGuesses);
-            console.log(player2.wrongGuesses);
             if (playerData.wrongGuesses >= maxWrongGuesses) {
                 document.getElementById(
                     `${currentPlayer}-message`
@@ -219,7 +226,6 @@ function handleGuess() {
         }
         letterInput.value = "";
         if (!playerData.displayedWord.includes("_")) {
-            console.log("win");
             if (currentPlayer == players[0]) {
                 endGame("Player 1", "win"); // Call end function
             } else if (currentPlayer == players[1]) {
@@ -269,15 +275,6 @@ const players = ["player1", "player2"]; // Exempel på spelare
 let currentPlayer = choosStartingPlayer(players); //Slumpa och visa vem som börjar
 
 console.log(`Spelet börjar! ${currentPlayer} är först.`); // Hänga med i turordningen i spelet
-
-// Updates the visual represention of the hangman
-function updateHangman() {
-    let playerData = getCurrentPlayerData(currentPlayer); // Fetches the current players data
-    const hangmanElement = document.getElementById(
-        `${currentPlayer}-hangman-display`
-    );
-    hangmanElement.textContent = hangmanStages[playerData.wrongGuesses];
-}
 
 // Reveals the word with guessed letters or underscores
 function revealWord() {
