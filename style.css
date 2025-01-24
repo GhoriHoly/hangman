@@ -143,3 +143,11 @@ main {
     width: 20rem;
     padding: 1rem;
 }
+
+/* Added By Holy for fixing hangman display*/
+.hangman-display {
+    font-family: monospace; 
+    white-space: pre; 
+    text-align: left; 
+    line-height: 1.2;
+}
