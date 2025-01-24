@@ -2,7 +2,7 @@
 const wordList = [
     "banan",
     "äpple",
-    // "jordgubbe",
+    // "jordgubbe", // commented out due to a word being longer than hangman stages causes a bug
     "päron",
     "melon",
     "apelsin",
@@ -106,7 +106,7 @@ const hangmanStages = [
      
      
      
-     -----
+   -----
     `,
     `
      
@@ -114,39 +114,39 @@ const hangmanStages = [
      
      |
      |
-     -----
+   -----
     `,
     `
-     O
+     O  
      |
      |
      |
      |
-     -----
+   -----
     `,
     `
-     O
-    /|
+     O  
+    /|  
+     |  
+     |  
      |
-     |
-     |
-     -----
+   -----
     `,
     `
-     O
-     /|\\
+     O  
+    /|\\
+     |  
+     |  
      |
-     |
-     |
-     -----
+   -----
     `,
     `
-     O
-     /|\\
+     O  
+    /|\\
+     |  
+    / \\
      |
-     / \\
-     |
-     -----
+   -----
     `,
 ];
 
@@ -166,10 +166,11 @@ function unknownLettersLeftInWord(word) {
 
 function updateHangman(player) {
     let playerData = player; // Fetch current player data
-    let drawOnPlayer;
+    let drawOnPlayer; // the opponent
     let lettersLeft =
         hangmanStages.length -
-        unknownLettersLeftInWord(playerData.displayedWord);
+        unknownLettersLeftInWord(playerData.displayedWord); // diff between non correct guessed letters and
+    // hangman stages to count backwards which stage the figure should be
     if (playerData.name == "player1") {
         drawOnPlayer = "player2";
     }
@@ -178,11 +179,10 @@ function updateHangman(player) {
     }
     let hangmanElement = document.getElementById(
         `${drawOnPlayer}-hangman-display`
-    ); // Update hangman figure for the opposite player
+    ); // Update the opponents hangman figure
+    hangmanElement.textContent = hangmanStages[lettersLeft - 1]; // Draw hangman->
+    // based on how many letters in the word are yet to guess correctly
     console.log(lettersLeft);
-    if (lettersLeft != hangmanStages.length) {
-        hangmanElement.textContent = hangmanStages[lettersLeft];
-    }
 }
 
 function displayWord() {
@@ -207,8 +207,8 @@ function handleGuess() {
     ) {
         playerData.guessedLetters.push(guess);
         if (playerData.chosenWord.includes(guess)) {
-            updateHangman(playerData);
             displayWord();
+            updateHangman(playerData);
         } else {
             alert("Fel gissning!");
             playerData.addWrongGuess();
