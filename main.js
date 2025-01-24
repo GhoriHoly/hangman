@@ -181,8 +181,6 @@ function handleGuess() {
         } else {
             alert("Fel gissning!");
             playerData.addWrongGuess();
-            console.log(player1.wrongGuesses);
-            console.log(player2.wrongGuesses);
             updateHangman();
 
             if (playerData.wrongGuesses >= maxWrongGuesses) {
