@@ -147,10 +147,11 @@ const hangmanStages = [
 const maxWrongGuesses = hangmanStages.length; // Maximum number of wrong gussess
 
 function updateHangman() {
+    let playerData = getCurrentPlayerData(currentPlayer); // Fetch current player data
     const hangmanElement = document.getElementById(
         `${currentPlayer}-hangman-display`
-    ); // Update hangman figure for the current player
-    hangmanElement.textContent = hangmanStages[wrongGuesses];
+    );
+    hangmanElement.textContent = hangmanStages[playerData.wrongGuesses];
 }
 
 function displayWord() {
