@@ -24,6 +24,7 @@ function switchCurrentPlayer() {
 
 // Set up each player as an object
 let player1 = {
+    name: "player1",
     chosenWord: wordList[Math.floor(Math.random() * wordList.length)], //Randomizes the player's word
     guessedLetters: [], // Stores the player's guessed letters
     displayedWord: [], // Representation of the word, underscores or correctly guessed letters
@@ -33,6 +34,7 @@ let player1 = {
     },
 };
 let player2 = {
+    name: "player2",
     chosenWord: wordList[Math.floor(Math.random() * wordList.length)], //Randomizes the player's word
     guessedLetters: [], // Stores the player's guessed letters
     displayedWord: [], // Representation of the word, underscores or correctly guessed letters
@@ -45,6 +47,7 @@ let player2 = {
 //Initialize each player, used when starting/resetting game, resetting the variables and randomizing a new word
 function initPlayers() {
     player1 = {
+        name: "player1",
         chosenWord: wordList[Math.floor(Math.random() * wordList.length)], //Randomizes the player's word
         guessedLetters: [], // Stores the player's guessed letters
         displayedWord: [], // Representation of the word, underscores or correctly guessed letters
@@ -55,6 +58,7 @@ function initPlayers() {
         },
     };
     player2 = {
+        name: "player2",
         chosenWord: wordList[Math.floor(Math.random() * wordList.length)], //Randomizes the player's word
         guessedLetters: [], // Stores the player's guessed letters
         displayedWord: [], // Representation of the word, underscores or correctly guessed letters
@@ -78,6 +82,10 @@ function initPlayersWords() {
         .map((letter) =>
             player2.guessedLetters.includes(letter) ? letter : "_"
         );
+    document.getElementById("player1-word-display").textContent =
+        player1.displayedWord.join(" ");
+    document.getElementById("player2-word-display").textContent =
+        player2.displayedWord.join(" ");
 }
 
 // Function used to fetch the current players data in other functions
@@ -111,7 +119,7 @@ const hangmanStages = [
      -----
     `,
     `
-     O  
+     O
      |
      |
      |
@@ -119,38 +127,50 @@ const hangmanStages = [
      -----
     `,
     `
-     O  
-    /|  
-     |  
-     |  
+     O
+    /|
+     |
+     |
      |
      -----
     `,
     `
-     O  
-    /|\\
-     |  
-     |  
+     O
+     /|\\
+     |
+     |
      |
      -----
     `,
     `
-     O  
-    /|\\
-     |  
-    / \\
+     O
+     /|\\
+     |
+     / \\
      |
      -----
     `,
 ];
 
-const maxWrongGuesses = hangmanStages.length; // Maximum number of wrong gussess
+const maxWrongGuesses = hangmanStages.length; // Maximum number of wrong guesses
 
 function updateHangman() {
-    const hangmanElement = document.getElementById(
-        `${currentPlayer}-hangman-display`
-    ); // Update hangman figure for the current player
-    hangmanElement.textContent = hangmanStages[wrongGuesses];
+    let playerData = getCurrentPlayerData(currentPlayer); // Fetch current player data
+
+    console.log("från hangman");
+    let drawOnPlayer;
+    if (playerData.name == "player1") {
+        drawOnPlayer = "player2";
+    }
+    if (playerData.name == "player2") {
+        drawOnPlayer = "player1";
+    }
+    let hangmanElement = document.getElementById(
+        `${drawOnPlayer}-hangman-display`
+    ); // Update hangman figure for the opposite player
+    console.log(`${drawOnPlayer}-hangman-display`);
+
+    hangmanElement.textContent = hangmanStages[playerData.wrongGuesses];
 }
 
 function displayWord() {
@@ -177,18 +197,24 @@ function handleGuess() {
     ) {
         playerData.guessedLetters.push(guess);
         if (playerData.chosenWord.includes(guess)) {
+            updateHangman();
             displayWord();
         } else {
             alert("Fel gissning!");
             playerData.addWrongGuess();
-            updateHangman();
 
+            console.log(player1.wrongGuesses);
+            console.log(player2.wrongGuesses);
             if (playerData.wrongGuesses >= maxWrongGuesses) {
                 document.getElementById(
                     `${currentPlayer}-message`
-                ).textContent = `Du förlorade! Ordet var: ${chosenWord}`;
-                document.getElementById("guess-button").disabled = true;
-                document.getElementById("letter-input").disabled = true;
+                ).textContent = `Du förlorade! Ordet var: ${playerData.chosenWord}`;
+                console.log("loss");
+                if (currentPlayer == players[0]) {
+                    endGame("Player 1", "loss"); // Call end function
+                } else if (currentPlayer == players[1]) {
+                    endGame("Player 2", "loss"); // Call end function
+                }
             }
         }
         letterInput.value = "";
@@ -211,21 +237,8 @@ function handleGuess() {
 function startGame() {
     initPlayers();
     initPlayersWords();
-    player1.displayedWord = player1.chosenWord
-        .split("")
-        .map((letter) =>
-            player1.guessedLetters.includes(letter) ? letter : "_"
-        );
-    document.getElementById("player1-word-display").textContent =
-        player1.displayedWord.join(" ");
-    player2.displayedWord = player2.chosenWord
-        .split("")
-        .map((letter) =>
-            player2.guessedLetters.includes(letter) ? letter : "_"
-        );
-    document.getElementById("player2-word-display").textContent =
-        player2.displayedWord.join(" ");
-    updateHangman();
+    updateHangman(player1);
+    updateHangman(player2);
     if (currentPlayer == players[0]) {
         // Sets the message to says whos turn it is
         document.getElementById("message").textContent =
@@ -287,7 +300,7 @@ function endGame(player, win) {
     if (win) {
         messageElement.textContent = `Congratulations ${player}! You've guessed the word!`;
     } else {
-        messageElement.textContent = `You lost! The word was: ${currentPlayer.chosenWord}`;
+        messageElement.textContent = `You lost! The word was: ${player.chosenWord}`;
     }
     showEndOptions();
 }
