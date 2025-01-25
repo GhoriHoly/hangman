@@ -7,6 +7,11 @@ const wordList = [
     "melon",
     "apelsin",
     "kiwi",
+    "avokado",
+    "lime",
+    "körsbär",
+    "oliv",
+    "persika",
 ];
 
 // Switch the current player
@@ -48,7 +53,7 @@ let player2 = {
 function initPlayers() {
     player1 = {
         name: "player1",
-        chosenWord: wordList[Math.floor(Math.random() * wordList.length)], //Randomizes the player's word
+        chosenWord: [], //Randomizes the player's word
         guessedLetters: [], // Stores the player's guessed letters
         displayedWord: [], // Representation of the word, underscores or correctly guessed letters
         wrongGuesses: 0, // Tracks number of wrong guesses
@@ -58,7 +63,7 @@ function initPlayers() {
     };
     player2 = {
         name: "player2",
-        chosenWord: wordList[Math.floor(Math.random() * wordList.length)], //Randomizes the player's word
+        chosenWord: [], //Randomizes the player's word
         guessedLetters: [], // Stores the player's guessed letters
         displayedWord: [], // Representation of the word, underscores or correctly guessed letters
         wrongGuesses: 0, // Tracks number of wrong guesses
@@ -70,11 +75,22 @@ function initPlayers() {
 
 // Initialize each players displayedWord
 function initPlayersWords() {
+    player1.chosenWord = wordList[Math.floor(Math.random() * wordList.length)];
     player1.displayedWord = player1.chosenWord
         .split("")
         .map((letter) =>
             player1.guessedLetters.includes(letter) ? letter : "_"
         );
+    while (true) {
+        player2.chosenWord =
+            wordList[Math.floor(Math.random() * wordList.length)];
+        if (
+            player2.chosenWord != player1.chosenWord &&
+            player2.chosenWord.length == player1.chosenWord.length
+        ) {
+            break;
+        }
+    }
     player2.displayedWord = player2.chosenWord
         .split("")
         .map((letter) =>
