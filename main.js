@@ -30,7 +30,7 @@ function switchCurrentPlayer() {
 // Set up each player as an object
 let player1 = {
     name: "player1",
-    chosenWord: wordList[Math.floor(Math.random() * wordList.length)], //Randomizes the player's word
+    chosenWord: [], //Randomizes the player's word
     guessedLetters: [], // Stores the player's guessed letters
     displayedWord: [], // Representation of the word, underscores or correctly guessed letters
     wrongGuesses: 0, // Tracks number of wrong guesses
@@ -40,7 +40,7 @@ let player1 = {
 };
 let player2 = {
     name: "player2",
-    chosenWord: wordList[Math.floor(Math.random() * wordList.length)], //Randomizes the player's word
+    chosenWord: [], //Randomizes the player's word
     guessedLetters: [], // Stores the player's guessed letters
     displayedWord: [], // Representation of the word, underscores or correctly guessed letters
     wrongGuesses: 0, // Tracks number of wrong guesses
