@@ -374,3 +374,42 @@ function addNewWord() {
 document
     .getElementById("add-word-button")
     .addEventListener("click", addNewWord);
+
+
+    function addNewWord() {
+        const newWordInput = document.getElementById("new-word-input");
+        const newWord = newWordInput.value.trim().toLowerCase();
+    
+        // Kontrollera om ordet är giltigt
+        if (newWord && !wordList.includes(newWord)) {
+            wordList.push(newWord); // Lägg till ordet i ordlistan
+    
+            // Spara den uppdaterade ordlistan till localStorage
+            localStorage.setItem("wordList", JSON.stringify(wordList));
+    
+            alert("Ordet har lagts till!");
+        } else {
+            alert("Ange ett giltigt ord som inte redan finns i listan.");
+        }
+    
+        // Rensa input-fältet
+        newWordInput.value = "";
+    }
+
+    
+    function loadWordList() {
+        // Hämta ordlistan från localStorage
+        const storedWordList = localStorage.getItem("wordList");
+    
+        // Om det finns en sparad ordlista, använd den, annars använd den fördefinierade
+        if (storedWordList) {
+            wordList = JSON.parse(storedWordList);
+        }
+    }
+    
+    // Kör denna funktion vid sidladdning
+    window.onload = function() {
+        loadWordList();  // Ladda ordlistan från localStorage
+        startGame();      // Starta spelet
+    };
+    
