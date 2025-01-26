@@ -13,65 +13,99 @@ const wordList = [
     "oliv",
     "persika",
 ];
+// switch current player
+function handleGuess() {
+    let playerData = getCurrentPlayerData(currentPlayer); // Get current player data
+    const letterInput = document.getElementById("letter-input");
+    const guess = letterInput.value.toLowerCase(); // Get the guessed letter
 
-// Switch the current player
-function switchCurrentPlayer() {
-    if (currentPlayer == players[0]) {
-        currentPlayer = players[1];
-        document.getElementById("message").textContent =
-            "Player 2, it is your turn";
-    } else if (currentPlayer == players[1]) {
-        currentPlayer = players[0];
-        document.getElementById("message").textContent =
-            "Player 1, it is your turn";
+    if (guess && guess.length === 1 && !playerData.guessedLetters.includes(guess)) {
+        playerData.guessedLetters.push(guess); // Add guessed letter to player's guessed letters
+
+        if (playerData.chosenWord.includes(guess)) {
+            // Correct guess
+            playerData.addCorrectGuess();
+            document.getElementById(
+                `correct-${currentPlayer === players[0] ? 1 : 2}`
+            ).textContent = playerData.correctGuesses; // Update correct counter in DOM
+            displayWord();
+        } else {
+            // Wrong guess
+            playerData.addWrongGuess();
+            document.getElementById(
+                `wrong-${currentPlayer === players[0] ? 1 : 2}`
+            ).textContent = playerData.wrongGuesses; // Update wrong counter in DOM
+
+            // Check if player loses
+            if (playerData.wrongGuesses >= maxWrongGuesses) {
+                endGame(
+                    currentPlayer === players[0] ? "Player 1" : "Player 2",
+                    "loss"
+                );
+                return;
+            }
+        }
+
+        // Clear the input field
+        letterInput.value = "";
+
+        // Check if the player wins
+        if (!playerData.displayedWord.includes("_")) {
+            endGame(
+                currentPlayer === players[0] ? "Player 1" : "Player 2",
+                "win"
+            );
+        } else {
+            // Switch to the next player
+            switchCurrentPlayer();
+        }
+    } else {
+        alert("Please enter a valid letter you haven't already guessed.");
     }
 }
-
-// Set up each player as an object
-let player1 = {
-    name: "player1",
-    chosenWord: [], //Randomizes the player's word
-    guessedLetters: [], // Stores the player's guessed letters
-    displayedWord: [], // Representation of the word, underscores or correctly guessed letters
-    wrongGuesses: 0, // Tracks number of wrong guesses
-    addWrongGuess: function () {
-        this.wrongGuesses++;
-    },
-};
-let player2 = {
-    name: "player2",
-    chosenWord: [], //Randomizes the player's word
-    guessedLetters: [], // Stores the player's guessed letters
-    displayedWord: [], // Representation of the word, underscores or correctly guessed letters
-    wrongGuesses: 0, // Tracks number of wrong guesses
-    addWrongGuess: function () {
-        this.wrongGuesses++;
-    },
-};
+function switchCurrentPlayer() {
+    if (currentPlayer === players[0]) {
+        currentPlayer = players[1];
+        document.getElementById("message").textContent = "Player 2, it is your turn";
+    } else {
+        currentPlayer = players[0];
+        document.getElementById("message").textContent = "Player 1, it is your turn";
+    }
+}
+    
 
 //Initialize each player, used when starting/resetting game, resetting the variables and randomizing a new word
 function initPlayers() {
     player1 = {
         name: "player1",
-        chosenWord: [], //Randomizes the player's word
+        chosenWord: [], // Randomized word for the player
         guessedLetters: [], // Stores the player's guessed letters
-        displayedWord: [], // Representation of the word, underscores or correctly guessed letters
-        wrongGuesses: 0, // Tracks number of wrong guesses
+        displayedWord: [], // Representation of the word (underscores or guessed letters)
+        wrongGuesses: 0, // Tracks the number of wrong guesses
+        correctGuesses: 0, // Tracks the number of correct guesses
         addWrongGuess: function () {
             this.wrongGuesses++;
+        },
+        addCorrectGuess: function () {
+            this.correctGuesses++;
         },
     };
     player2 = {
         name: "player2",
-        chosenWord: [], //Randomizes the player's word
+        chosenWord: [], // Randomized word for the player
         guessedLetters: [], // Stores the player's guessed letters
-        displayedWord: [], // Representation of the word, underscores or correctly guessed letters
-        wrongGuesses: 0, // Tracks number of wrong guesses
+        displayedWord: [], // Representation of the word (underscores or guessed letters)
+        wrongGuesses: 0, // Tracks the number of wrong guesses
+        correctGuesses: 0, // Tracks the number of correct guesses
         addWrongGuess: function () {
             this.wrongGuesses++;
         },
+        addCorrectGuess: function () {
+            this.correctGuesses++;
+        },
     };
 }
+
 
 // Initialize each players displayedWord
 function initPlayersWords() {
@@ -102,10 +136,12 @@ function initPlayersWords() {
         player2.displayedWord.join(" ");
 }
 
-// Function used to fetch the current players data in other functions
+//fetch the exakt turn for player
 function getCurrentPlayerData(currentPlayer) {
     return currentPlayer === players[0] ? player1 : player2;
 }
+
+
 
 const hangmanStages = [
     `
@@ -211,67 +247,83 @@ function displayWord() {
     document.getElementById(`${currentPlayer}-word-display`).textContent =
         playerData.displayedWord.join(" ");
 }
-
+//
 function handleGuess() {
-    let playerData = getCurrentPlayerData(currentPlayer); // Fetch current player data
+    let playerData = getCurrentPlayerData(currentPlayer); // Get the current player's data
     const letterInput = document.getElementById("letter-input");
-    const guess = letterInput.value.toLowerCase();
-    if (
-        guess &&
-        guess.length === 1 &&
-        !playerData.guessedLetters.includes(guess)
-    ) {
-        playerData.guessedLetters.push(guess);
+    const guess = letterInput.value.toLowerCase(); // Get the guessed letter
+
+    if (guess && guess.length === 1 && !playerData.guessedLetters.includes(guess)) {
+        playerData.guessedLetters.push(guess); // Add the guessed letter to the player's guessed letters
+
         if (playerData.chosenWord.includes(guess)) {
+            // Correct guess
+            playerData.addCorrectGuess(); // Increment correct guesses
+            document.getElementById(
+                `correct-${currentPlayer === players[0] ? 1 : 2}`
+            ).textContent = playerData.correctGuesses; // Update correct counter in the DOM
             displayWord();
-            updateHangman(playerData);
         } else {
-            alert("Fel gissning!");
-            playerData.addWrongGuess();
+            // Wrong guess
+            playerData.addWrongGuess(); // Increment wrong guesses
+            document.getElementById(
+                `wrong-${currentPlayer === players[0] ? 1 : 2}`
+            ).textContent = playerData.wrongGuesses; // Update wrong counter in the DOM
+
+            // Check if the player loses
             if (playerData.wrongGuesses >= maxWrongGuesses) {
-                document.getElementById(
-                    `${currentPlayer}-message`
-                ).textContent = `Du förlorade! Ordet var: ${playerData.chosenWord}`;
-                console.log("loss");
-                if (currentPlayer == players[0]) {
-                    endGame("Player 1", "loss"); // Call end function
-                } else if (currentPlayer == players[1]) {
-                    endGame("Player 2", "loss"); // Call end function
-                }
+                endGame(
+                    currentPlayer === players[0] ? "Player 1" : "Player 2",
+                    "loss"
+                );
+                return;
             }
         }
+
+        // Clear the input field
         letterInput.value = "";
+
+        // Check if the player wins
         if (!playerData.displayedWord.includes("_")) {
-            if (currentPlayer == players[0]) {
-                endGame("Player 1", "win"); // Call end function
-            } else if (currentPlayer == players[1]) {
-                endGame("Player 2", "win"); // Call end function
-            }
+            endGame(
+                currentPlayer === players[0] ? "Player 1" : "Player 2",
+                "win"
+            );
         } else {
-            switchCurrentPlayer(); // Switch the current player if the game has not ended
+            // Switch to the next player
+            switchCurrentPlayer();
         }
     } else {
-        alert("Ange en giltig bokstav som du inte redan har gissat.");
+        alert("Please enter a valid letter you haven't already guessed.");
     }
 }
 
-// Funktion för att starta spelet
+
+// new function for star game
 function startGame() {
-    initPlayers();
-    initPlayersWords();
+    initPlayers(); // Reset player data
+    initPlayersWords(); // Initialize words for both players
     updateHangman(player1);
     updateHangman(player2);
-    if (currentPlayer == players[0]) {
-        // Sets the message to says whos turn it is
-        document.getElementById("message").textContent =
-            "Player 1, it is your turn";
-    } else if (currentPlayer == players[1]) {
-        document.getElementById("message").textContent =
-            "Player 2, it is your turn";
-    }
+
+    // Reset counters in the UI
+    document.getElementById("correct-1").textContent = "0";
+    document.getElementById("wrong-1").textContent = "0";
+    document.getElementById("correct-2").textContent = "0";
+    document.getElementById("wrong-2").textContent = "0";
+
+    // Set Player 1 as the starting player
+    currentPlayer = players[0];
+    document.getElementById("message").textContent = "Player 1, it is your turn";
+
+    // Enable input fields
     document.getElementById("guess-button").disabled = false;
     document.getElementById("letter-input").disabled = false;
 }
+
+
+
+
 
 // Starta spelet när sidan laddas
 window.onload = startGame;
