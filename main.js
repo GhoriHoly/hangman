@@ -7,7 +7,7 @@ const wordList = [
     "melon",
     "apelsin",
     "kiwi",
-];
+]
 
 const hangmanStages = [
     `
@@ -163,7 +163,7 @@ function updateHangman() {
 // Reveals the word with guessed letters or underscores
 function revealWord() {
     // Stores this array. It is used to keep track of which letters have been revealed
-    revealedWord = chosenWord; //Maps each letter in the word to either the guesses letter or an underscore
+   const  revealedWord = chosenWord; //Maps each letter in the word to either the guesses letter or an underscore
     chosenWord.split(""); // Splits the string "____"into an array where each - becomes a separate element
     chosenWord.map((letter) =>
         guessedLetters.includes(letter) ? letter : "_"
@@ -245,3 +245,5 @@ function addNewWord() {
 document
     .getElementById("add-word-button")
     .addEventListener("click", addNewWord);
+
+
