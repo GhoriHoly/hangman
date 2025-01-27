@@ -29,7 +29,10 @@ function handleGuess() {
                 `correct-${currentPlayer === players[0] ? 1 : 2}`
             ).textContent = playerData.correctGuesses; // Update correct counter in DOM
             displayWord();
+            updateHangman(playerData);
         } else {
+            alert("Fel gissning!");
+            playerData.addWrongGuess();
             // Wrong guess
             playerData.addWrongGuess();
             document.getElementById(
@@ -45,7 +48,28 @@ function handleGuess() {
                 return;
             }
         }
-
+        
+// Set up each player as an object
+let player1 = {
+    name: "player1",
+    chosenWord: [], //Randomizes the player's word
+    guessedLetters: [], // Stores the player's guessed letters
+    displayedWord: [], // Representation of the word, underscores or correctly guessed letters
+    wrongGuesses: 0, // Tracks number of wrong guesses
+    addWrongGuess: function () {
+        this.wrongGuesses++;
+    },
+};
+let player2 = {
+    name: "player2",
+    chosenWord: [], //Randomizes the player's word
+    guessedLetters: [], // Stores the player's guessed letters
+    displayedWord: [], // Representation of the word, underscores or correctly guessed letters
+    wrongGuesses: 0, // Tracks number of wrong guesses
+    addWrongGuess: function () {
+        this.wrongGuesses++;
+    },
+};
         // Clear the input field
         letterInput.value = "";
 
@@ -247,57 +271,6 @@ function displayWord() {
     document.getElementById(`${currentPlayer}-word-display`).textContent =
         playerData.displayedWord.join(" ");
 }
-//
-function handleGuess() {
-    let playerData = getCurrentPlayerData(currentPlayer); // Get the current player's data
-    const letterInput = document.getElementById("letter-input");
-    const guess = letterInput.value.toLowerCase(); // Get the guessed letter
-
-    if (guess && guess.length === 1 && !playerData.guessedLetters.includes(guess)) {
-        playerData.guessedLetters.push(guess); // Add the guessed letter to the player's guessed letters
-
-        if (playerData.chosenWord.includes(guess)) {
-            // Correct guess
-            playerData.addCorrectGuess(); // Increment correct guesses
-            document.getElementById(
-                `correct-${currentPlayer === players[0] ? 1 : 2}`
-            ).textContent = playerData.correctGuesses; // Update correct counter in the DOM
-            displayWord();
-        } else {
-            // Wrong guess
-            playerData.addWrongGuess(); // Increment wrong guesses
-            document.getElementById(
-                `wrong-${currentPlayer === players[0] ? 1 : 2}`
-            ).textContent = playerData.wrongGuesses; // Update wrong counter in the DOM
-
-            // Check if the player loses
-            if (playerData.wrongGuesses >= maxWrongGuesses) {
-                endGame(
-                    currentPlayer === players[0] ? "Player 1" : "Player 2",
-                    "loss"
-                );
-                return;
-            }
-        }
-
-        // Clear the input field
-        letterInput.value = "";
-
-        // Check if the player wins
-        if (!playerData.displayedWord.includes("_")) {
-            endGame(
-                currentPlayer === players[0] ? "Player 1" : "Player 2",
-                "win"
-            );
-        } else {
-            // Switch to the next player
-            switchCurrentPlayer();
-        }
-    } else {
-        alert("Please enter a valid letter you haven't already guessed.");
-    }
-}
-
 
 // new function for star game
 function startGame() {
@@ -320,10 +293,6 @@ function startGame() {
     document.getElementById("guess-button").disabled = false;
     document.getElementById("letter-input").disabled = false;
 }
-
-
-
-
 
 // Starta spelet när sidan laddas
 window.onload = startGame;
