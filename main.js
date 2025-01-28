@@ -13,7 +13,20 @@ const wordList = [
     "oliv",
     "persika",
 ];
-
+// Optionscategory
+let option = {
+    fruits: ["banan", "äpple", "druvor", "päron", "melon", "apelsin", "kiwi"],
+    programming: ["php", "javascript", "python", "java"],
+    movies: ["coco", "up", "prestige", "inception"],
+    people: ["albert", "einstein", "alexander", "mahatma ghandi", "cleopatra"],
+    countries: ["Sudan", "Egypt", "Sweden", "India", "Iraq"],
+};
+//Select Optionsctegory
+function setCategoryAndStartGame() {
+    const SelectedCategory = document.getElementById("category-select").value;
+    wordList = option [SelectedCategory]; // Uppdatera ordlistan baserat på vald kategori
+    startGame();
+}
 // Switch the current player
 function switchCurrentPlayer() {
     if (currentPlayer == players[0]) {
