@@ -24,7 +24,7 @@ let option = {
 //Select Optionsctegory
 function setCategoryAndStartGame() {
     const SelectedCategory = document.getElementById("category-select").value;
-    wordList = option [SelectedCategory]; // Uppdatera ordlistan baserat på vald kategori
+    wordList = option[SelectedCategory]; // Uppdatera ordlistan baserat på vald kategori
     startGame();
 }
 // Switch the current player
@@ -61,6 +61,7 @@ let player2 = {
         this.wrongGuesses++;
     },
 };
+const players = [player1, player2]; // A list players
 
 //Initialize each player, used when starting/resetting game, resetting the variables and randomizing a new word
 function initPlayers() {
@@ -274,6 +275,8 @@ function startGame() {
     initPlayersWords();
     updateHangman(player1);
     updateHangman(player2);
+    let currentPlayer = choosStartingPlayer(players); //Slumpa och visa vem som börjar
+
     if (currentPlayer == players[0]) {
         // Sets the message to says whos turn it is
         document.getElementById("message").textContent =
@@ -296,14 +299,9 @@ document.getElementById("guess-button").addEventListener("click", handleGuess);
 function choosStartingPlayer(players) {
     const randomIndex = Math.floor(Math.random() * players.length);
     startingPlayer = players[randomIndex];
-    console.log(`${startingPlayer} börjer gissa!`);
+    console.log(`${startingPlayer.name} börjer gissa!`);
     return startingPlayer;
 }
-
-const players = ["player1", "player2"]; // Exempel på spelare
-let currentPlayer = choosStartingPlayer(players); //Slumpa och visa vem som börjar
-
-console.log(`Spelet börjar! ${currentPlayer} är först.`); // Hänga med i turordningen i spelet
 
 // Reveals the word with guessed letters or underscores
 function revealWord() {
@@ -388,41 +386,38 @@ document
     .getElementById("add-word-button")
     .addEventListener("click", addNewWord);
 
+function addNewWord() {
+    const newWordInput = document.getElementById("new-word-input");
+    const newWord = newWordInput.value.trim().toLowerCase();
 
-    function addNewWord() {
-        const newWordInput = document.getElementById("new-word-input");
-        const newWord = newWordInput.value.trim().toLowerCase();
-    
-        // Kontrollera om ordet är giltigt
-        if (newWord && !wordList.includes(newWord)) {
-            wordList.push(newWord); // Lägg till ordet i ordlistan
-    
-            // Spara den uppdaterade ordlistan till localStorage
-            localStorage.setItem("wordList", JSON.stringify(wordList));
-    
-            alert("Ordet har lagts till!");
-        } else {
-            alert("Ange ett giltigt ord som inte redan finns i listan.");
-        }
-    
-        // Rensa input-fältet
-        newWordInput.value = "";
+    // Kontrollera om ordet är giltigt
+    if (newWord && !wordList.includes(newWord)) {
+        wordList.push(newWord); // Lägg till ordet i ordlistan
+
+        // Spara den uppdaterade ordlistan till localStorage
+        localStorage.setItem("wordList", JSON.stringify(wordList));
+
+        alert("Ordet har lagts till!");
+    } else {
+        alert("Ange ett giltigt ord som inte redan finns i listan.");
     }
 
-    
-    function loadWordList() {
-        // Hämta ordlistan från localStorage
-        const storedWordList = localStorage.getItem("wordList");
-    
-        // Om det finns en sparad ordlista, använd den, annars använd den fördefinierade
-        if (storedWordList) {
-            wordList = JSON.parse(storedWordList);
-        }
+    // Rensa input-fältet
+    newWordInput.value = "";
+}
+
+function loadWordList() {
+    // Hämta ordlistan från localStorage
+    const storedWordList = localStorage.getItem("wordList");
+
+    // Om det finns en sparad ordlista, använd den, annars använd den fördefinierade
+    if (storedWordList) {
+        wordList = JSON.parse(storedWordList);
     }
-    
-    // Kör denna funktion vid sidladdning
-    window.onload = function() {
-        loadWordList();  // Ladda ordlistan från localStorage
-        startGame();      // Starta spelet
-    };
-    
+}
+
+// Kör denna funktion vid sidladdning
+window.onload = function () {
+    loadWordList(); // Ladda ordlistan från localStorage
+    startGame(); // Starta spelet
+};
