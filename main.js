@@ -13,13 +13,30 @@ const wordList = [
     "oliv",
     "persika",
 ];
-// switch current player
+// Optionscategory
+let option = {
+    fruits: ["banan", "äpple", "druvor", "päron", "melon", "apelsin", "kiwi"],
+    programming: ["php", "javascript", "python", "java"],
+    movies: ["coco", "up", "prestige", "inception"],
+    people: ["albert", "einstein", "alexander", "mahatma ghandi", "cleopatra"],
+    countries: ["Sudan", "Egypt", "Sweden", "India", "Iraq"],
+};
+//Select Optionsctegory
+function setCategoryAndStartGame() {
+    const SelectedCategory = document.getElementById("category-select").value;
+    wordList = option[SelectedCategory]; // Uppdatera ordlistan baserat på vald kategori
+    startGame();
+} // switch current player
 function handleGuess() {
     let playerData = getCurrentPlayerData(currentPlayer); // Get current player data
     const letterInput = document.getElementById("letter-input");
     const guess = letterInput.value.toLowerCase(); // Get the guessed letter
 
-    if (guess && guess.length === 1 && !playerData.guessedLetters.includes(guess)) {
+    if (
+        guess &&
+        guess.length === 1 &&
+        !playerData.guessedLetters.includes(guess)
+    ) {
         playerData.guessedLetters.push(guess); // Add guessed letter to player's guessed letters
 
         if (playerData.chosenWord.includes(guess)) {
@@ -48,28 +65,28 @@ function handleGuess() {
                 return;
             }
         }
-        
-// Set up each player as an object
-let player1 = {
-    name: "player1",
-    chosenWord: [], //Randomizes the player's word
-    guessedLetters: [], // Stores the player's guessed letters
-    displayedWord: [], // Representation of the word, underscores or correctly guessed letters
-    wrongGuesses: 0, // Tracks number of wrong guesses
-    addWrongGuess: function () {
-        this.wrongGuesses++;
-    },
-};
-let player2 = {
-    name: "player2",
-    chosenWord: [], //Randomizes the player's word
-    guessedLetters: [], // Stores the player's guessed letters
-    displayedWord: [], // Representation of the word, underscores or correctly guessed letters
-    wrongGuesses: 0, // Tracks number of wrong guesses
-    addWrongGuess: function () {
-        this.wrongGuesses++;
-    },
-};
+
+        // Set up each player as an object
+        let player1 = {
+            name: "player1",
+            chosenWord: [], //Randomizes the player's word
+            guessedLetters: [], // Stores the player's guessed letters
+            displayedWord: [], // Representation of the word, underscores or correctly guessed letters
+            wrongGuesses: 0, // Tracks number of wrong guesses
+            addWrongGuess: function () {
+                this.wrongGuesses++;
+            },
+        };
+        let player2 = {
+            name: "player2",
+            chosenWord: [], //Randomizes the player's word
+            guessedLetters: [], // Stores the player's guessed letters
+            displayedWord: [], // Representation of the word, underscores or correctly guessed letters
+            wrongGuesses: 0, // Tracks number of wrong guesses
+            addWrongGuess: function () {
+                this.wrongGuesses++;
+            },
+        };
         // Clear the input field
         letterInput.value = "";
 
@@ -90,13 +107,14 @@ let player2 = {
 function switchCurrentPlayer() {
     if (currentPlayer === players[0]) {
         currentPlayer = players[1];
-        document.getElementById("message").textContent = "Player 2, it is your turn";
+        document.getElementById("message").textContent =
+            "Player 2, it is your turn";
     } else {
         currentPlayer = players[0];
-        document.getElementById("message").textContent = "Player 1, it is your turn";
+        document.getElementById("message").textContent =
+            "Player 1, it is your turn";
     }
 }
-    
 
 //Initialize each player, used when starting/resetting game, resetting the variables and randomizing a new word
 function initPlayers() {
@@ -129,7 +147,6 @@ function initPlayers() {
         },
     };
 }
-
 
 // Initialize each players displayedWord
 function initPlayersWords() {
@@ -164,8 +181,6 @@ function initPlayersWords() {
 function getCurrentPlayerData(currentPlayer) {
     return currentPlayer === players[0] ? player1 : player2;
 }
-
-
 
 const hangmanStages = [
     `
@@ -287,7 +302,8 @@ function startGame() {
 
     // Set Player 1 as the starting player
     currentPlayer = players[0];
-    document.getElementById("message").textContent = "Player 1, it is your turn";
+    document.getElementById("message").textContent =
+        "Player 1, it is your turn";
 
     // Enable input fields
     document.getElementById("guess-button").disabled = false;
@@ -396,41 +412,38 @@ document
     .getElementById("add-word-button")
     .addEventListener("click", addNewWord);
 
+function addNewWord() {
+    const newWordInput = document.getElementById("new-word-input");
+    const newWord = newWordInput.value.trim().toLowerCase();
 
-    function addNewWord() {
-        const newWordInput = document.getElementById("new-word-input");
-        const newWord = newWordInput.value.trim().toLowerCase();
-    
-        // Kontrollera om ordet är giltigt
-        if (newWord && !wordList.includes(newWord)) {
-            wordList.push(newWord); // Lägg till ordet i ordlistan
-    
-            // Spara den uppdaterade ordlistan till localStorage
-            localStorage.setItem("wordList", JSON.stringify(wordList));
-    
-            alert("Ordet har lagts till!");
-        } else {
-            alert("Ange ett giltigt ord som inte redan finns i listan.");
-        }
-    
-        // Rensa input-fältet
-        newWordInput.value = "";
+    // Kontrollera om ordet är giltigt
+    if (newWord && !wordList.includes(newWord)) {
+        wordList.push(newWord); // Lägg till ordet i ordlistan
+
+        // Spara den uppdaterade ordlistan till localStorage
+        localStorage.setItem("wordList", JSON.stringify(wordList));
+
+        alert("Ordet har lagts till!");
+    } else {
+        alert("Ange ett giltigt ord som inte redan finns i listan.");
     }
 
-    
-    function loadWordList() {
-        // Hämta ordlistan från localStorage
-        const storedWordList = localStorage.getItem("wordList");
-    
-        // Om det finns en sparad ordlista, använd den, annars använd den fördefinierade
-        if (storedWordList) {
-            wordList = JSON.parse(storedWordList);
-        }
+    // Rensa input-fältet
+    newWordInput.value = "";
+}
+
+function loadWordList() {
+    // Hämta ordlistan från localStorage
+    const storedWordList = localStorage.getItem("wordList");
+
+    // Om det finns en sparad ordlista, använd den, annars använd den fördefinierade
+    if (storedWordList) {
+        wordList = JSON.parse(storedWordList);
     }
-    
-    // Kör denna funktion vid sidladdning
-    window.onload = function() {
-        loadWordList();  // Ladda ordlistan från localStorage
-        startGame();      // Starta spelet
-    };
-    
+}
+
+// Kör denna funktion vid sidladdning
+window.onload = function () {
+    loadWordList(); // Ladda ordlistan från localStorage
+    startGame(); // Starta spelet
+};
