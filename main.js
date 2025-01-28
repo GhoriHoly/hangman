@@ -62,6 +62,7 @@ let player2 = {
     },
 };
 const players = [player1, player2]; // A list players
+let currentPlayer;
 
 //Initialize each player, used when starting/resetting game, resetting the variables and randomizing a new word
 function initPlayers() {
@@ -222,7 +223,7 @@ function displayWord() {
         .map((letter) =>
             playerData.guessedLetters.includes(letter) ? letter : "_"
         );
-    document.getElementById(`${currentPlayer}-word-display`).textContent =
+    document.getElementById(`${currentPlayer.name}-word-display`).textContent =
         playerData.displayedWord.join(" ");
 }
 
@@ -275,7 +276,7 @@ function startGame() {
     initPlayersWords();
     updateHangman(player1);
     updateHangman(player2);
-    let currentPlayer = choosStartingPlayer(players); //Slumpa och visa vem som börjar
+    currentPlayer = choosStartingPlayer(players); //Slumpa och visa vem som börjar
 
     if (currentPlayer == players[0]) {
         // Sets the message to says whos turn it is
@@ -290,7 +291,7 @@ function startGame() {
 }
 
 // Starta spelet när sidan laddas
-window.onload = startGame;
+window.onload = startGame();
 
 // Lägg till eventlyssnare på knappen för gissningar
 document.getElementById("guess-button").addEventListener("click", handleGuess);
