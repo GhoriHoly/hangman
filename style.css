@@ -1,7 +1,20 @@
 * {
     box-sizing: border-box;
 }
+.container {
+    font-size: 16px; ;
+    background: palegoldenrod;
+    width: 50vw ;
+    max-width:25em;
+    position: absolute;
+    transform: translate(-30%,-30%);
+    top: 30%;
+    left:30% ;
+    padding:3em ;
+    border-radius: 0.6em;
+    box-shadow:0 1.2em2 2.4emrgba(111,85,0,0.25) ;
 
+}
 body {
     height: 100vh;
     width: 100vw;

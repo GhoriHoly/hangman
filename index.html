@@ -11,7 +11,17 @@
 
         <main>
             <p>Gissa bokstäverna i ordet!</p>
-            <button id="start-btn" class="button">START NEW GAME</button>
+            <div class="category-container">
+                <label for="category-select"> Select an option:</lebel>
+                    <select id="category-select" class="button">
+                        <option value="fruits"> Fruits</option>
+                        <option value="programming"> Programming </option>
+                        <option value="movies"> Movies </option>
+                        <option value="people"> People </option>
+                        <option value="countries"> Countries </option>
+                    </select>
+                  <button id="start-btn" class="button">START NEW GAME</button>
+                </div>
             <div class="game-container">
                 <div class="player-containers">
                     <div id="player1-container" class="player-container">
@@ -67,7 +77,8 @@
                 </div>
             </div>
         </main>
-
+             
+              </div>
         <!-- Formulär för att lägga till nya ord -->
         <div id="add-word-form">
             <input
