@@ -1,8 +1,7 @@
 // Word list with words the players will guess
-const wordList = [
+let wordList = [
     "banan",
     "äpple",
-    // "jordgubbe", // commented out due to a word being longer than hangman stages causes a bug
     "päron",
     "melon",
     "apelsin",
@@ -13,118 +12,56 @@ const wordList = [
     "oliv",
     "persika",
 ];
-// Optionscategory
-let option = {
+// Options category
+const option = {
     fruits: ["banan", "äpple", "druvor", "päron", "melon", "apelsin", "kiwi"],
     programming: ["php", "javascript", "python", "java"],
     movies: ["coco", "up", "prestige", "inception"],
     people: ["albert", "einstein", "alexander", "mahatma ghandi", "cleopatra"],
     countries: ["Sudan", "Egypt", "Sweden", "India", "Iraq"],
 };
-//Select Optionsctegory
+
+// Select Options Category
 function setCategoryAndStartGame() {
-    const SelectedCategory = document.getElementById("category-select").value;
-    wordList = option[SelectedCategory]; // Uppdatera ordlistan baserat på vald kategori
+    const selectedCategory = document.getElementById("category-select").value;
+    wordList = option[selectedCategory];
     startGame();
-} // switch current player
-function handleGuess() {
-    let playerData = getCurrentPlayerData(currentPlayer); // Get current player data
-    const letterInput = document.getElementById("letter-input");
-    const guess = letterInput.value.toLowerCase(); // Get the guessed letter
-
-    if (
-        guess &&
-        guess.length === 1 &&
-        !playerData.guessedLetters.includes(guess)
-    ) {
-        playerData.guessedLetters.push(guess); // Add guessed letter to player's guessed letters
-
-        if (playerData.chosenWord.includes(guess)) {
-            // Correct guess
-            playerData.addCorrectGuess();
-            document.getElementById(
-                `correct-${currentPlayer === players[0] ? 1 : 2}`
-            ).textContent = playerData.correctGuesses; // Update correct counter in DOM
-            displayWord();
-            updateHangman(playerData);
-        } else {
-            alert("Fel gissning!");
-            playerData.addWrongGuess();
-            // Wrong guess
-            playerData.addWrongGuess();
-            document.getElementById(
-                `wrong-${currentPlayer === players[0] ? 1 : 2}`
-            ).textContent = playerData.wrongGuesses; // Update wrong counter in DOM
-
-            // Check if player loses
-            if (playerData.wrongGuesses >= maxWrongGuesses) {
-                endGame(
-                    currentPlayer === players[0] ? "Player 1" : "Player 2",
-                    "loss"
-                );
-                return;
-            }
-        }
-
-        // Set up each player as an object
-        let player1 = {
-            name: "player1",
-            chosenWord: [], //Randomizes the player's word
-            guessedLetters: [], // Stores the player's guessed letters
-            displayedWord: [], // Representation of the word, underscores or correctly guessed letters
-            wrongGuesses: 0, // Tracks number of wrong guesses
-            addWrongGuess: function () {
-                this.wrongGuesses++;
-            },
-        };
-        let player2 = {
-            name: "player2",
-            chosenWord: [], //Randomizes the player's word
-            guessedLetters: [], // Stores the player's guessed letters
-            displayedWord: [], // Representation of the word, underscores or correctly guessed letters
-            wrongGuesses: 0, // Tracks number of wrong guesses
-            addWrongGuess: function () {
-                this.wrongGuesses++;
-            },
-        };
-        // Clear the input field
-        letterInput.value = "";
-
-        // Check if the player wins
-        if (!playerData.displayedWord.includes("_")) {
-            endGame(
-                currentPlayer === players[0] ? "Player 1" : "Player 2",
-                "win"
-            );
-        } else {
-            // Switch to the next player
-            switchCurrentPlayer();
-        }
-    } else {
-        alert("Please enter a valid letter you haven't already guessed.");
-    }
-}
-function switchCurrentPlayer() {
-    if (currentPlayer === players[0]) {
-        currentPlayer = players[1];
-        document.getElementById("message").textContent =
-            "Player 2, it is your turn";
-    } else {
-        currentPlayer = players[0];
-        document.getElementById("message").textContent =
-            "Player 1, it is your turn";
-    }
 }
 
-//Initialize each player, used when starting/resetting game, resetting the variables and randomizing a new word
+// Set up each player as an object
+let player1 = {
+    name: "player1",
+    chosenWord: [], //Randomizes the player's word
+    guessedLetters: [], // Stores the player's guessed letters
+    displayedWord: [], // Representation of the word, underscores or correctly guessed letters
+    wrongGuesses: 0, // Tracks number of wrong guesses
+    addWrongGuess: function () {
+        this.wrongGuesses++;
+    },
+};
+let player2 = {
+    name: "player2",
+    chosenWord: [], //Randomizes the player's word
+    guessedLetters: [], // Stores the player's guessed letters
+    displayedWord: [], // Representation of the word, underscores or correctly guessed letters
+    wrongGuesses: 0, // Tracks number of wrong guesses
+    addWrongGuess: function () {
+        this.wrongGuesses++;
+    },
+};
+
+const players = [player1, player2]; // A list players
+let currentPlayer;
+
+// Initialize players
 function initPlayers() {
     player1 = {
         name: "player1",
-        chosenWord: [], // Randomized word for the player
-        guessedLetters: [], // Stores the player's guessed letters
-        displayedWord: [], // Representation of the word (underscores or guessed letters)
-        wrongGuesses: 0, // Tracks the number of wrong guesses
-        correctGuesses: 0, // Tracks the number of correct guesses
+        chosenWord: "",
+        guessedLetters: [],
+        displayedWord: [],
+        wrongGuesses: 0,
+        correctGuesses: 0,
         addWrongGuess: function () {
             this.wrongGuesses++;
         },
@@ -134,11 +71,11 @@ function initPlayers() {
     };
     player2 = {
         name: "player2",
-        chosenWord: [], // Randomized word for the player
-        guessedLetters: [], // Stores the player's guessed letters
-        displayedWord: [], // Representation of the word (underscores or guessed letters)
-        wrongGuesses: 0, // Tracks the number of wrong guesses
-        correctGuesses: 0, // Tracks the number of correct guesses
+        chosenWord: "",
+        guessedLetters: [],
+        displayedWord: [],
+        wrongGuesses: 0,
+        correctGuesses: 0,
         addWrongGuess: function () {
             this.wrongGuesses++;
         },
@@ -148,37 +85,26 @@ function initPlayers() {
     };
 }
 
-// Initialize each players displayedWord
+// Initialize players' words
 function initPlayersWords() {
     player1.chosenWord = wordList[Math.floor(Math.random() * wordList.length)];
-    player1.displayedWord = player1.chosenWord
-        .split("")
-        .map((letter) =>
-            player1.guessedLetters.includes(letter) ? letter : "_"
-        );
-    while (true) {
+    player1.displayedWord = Array(player1.chosenWord.length).fill("_");
+    do {
         player2.chosenWord =
             wordList[Math.floor(Math.random() * wordList.length)];
-        if (
-            player2.chosenWord != player1.chosenWord &&
-            player2.chosenWord.length == player1.chosenWord.length
-        ) {
-            break;
-        }
-    }
-    player2.displayedWord = player2.chosenWord
-        .split("")
-        .map((letter) =>
-            player2.guessedLetters.includes(letter) ? letter : "_"
-        );
+    } while (
+        player2.chosenWord === player1.chosenWord ||
+        player2.chosenWord.length !== player1.chosenWord.length
+    );
+    player2.displayedWord = Array(player2.chosenWord.length).fill("_");
     document.getElementById("player1-word-display").textContent =
         player1.displayedWord.join(" ");
     document.getElementById("player2-word-display").textContent =
         player2.displayedWord.join(" ");
 }
 
-//fetch the exakt turn for player
-function getCurrentPlayerData(currentPlayer) {
+// Fetch the exact turn for player
+function getCurrentPlayerData() {
     return currentPlayer === players[0] ? player1 : player2;
 }
 
@@ -283,51 +209,107 @@ function displayWord() {
         .map((letter) =>
             playerData.guessedLetters.includes(letter) ? letter : "_"
         );
-    document.getElementById(`${currentPlayer}-word-display`).textContent =
+    document.getElementById(`${currentPlayer.name}-word-display`).textContent =
         playerData.displayedWord.join(" ");
 }
 
-// new function for star game
+// Handle player guess
+function handleGuess() {
+    let playerData = getCurrentPlayerData(currentPlayer); // Fetch current player data
+    const letterInput = document.getElementById("letter-input");
+    const guess = letterInput.value.toLowerCase();
+    if (
+        guess &&
+        guess.length === 1 &&
+        !playerData.guessedLetters.includes(guess)
+    ) {
+        playerData.guessedLetters.push(guess);
+        if (playerData.chosenWord.includes(guess)) {
+            displayWord();
+            updateHangman(playerData);
+        } else {
+            alert("Fel gissning!");
+            playerData.addWrongGuess();
+            if (playerData.wrongGuesses >= maxWrongGuesses) {
+                document.getElementById(
+                    `${currentPlayer}-message`
+                ).textContent = `Du förlorade! Ordet var: ${playerData.chosenWord}`;
+                console.log("loss");
+                if (currentPlayer == players[0]) {
+                    endGame("Player 1", "loss"); // Call end function
+                } else if (currentPlayer == players[1]) {
+                    endGame("Player 2", "loss"); // Call end function
+                }
+            }
+        }
+        letterInput.value = "";
+        if (!playerData.displayedWord.includes("_")) {
+            if (currentPlayer == players[0]) {
+                endGame("Player 1", "win"); // Call end function
+            } else if (currentPlayer == players[1]) {
+                endGame("Player 2", "win"); // Call end function
+            }
+        } else {
+            switchCurrentPlayer(); // Switch the current player if the game has not ended
+        }
+    } else {
+        alert("Ange en giltig bokstav som du inte redan har gissat.");
+    }
+}
+
+// Switch the current player
+function switchCurrentPlayer() {
+    if (currentPlayer == players[0]) {
+        currentPlayer = players[1];
+        document.getElementById("message").textContent =
+            "Player 2, it is your turn";
+    } else if (currentPlayer == players[1]) {
+        currentPlayer = players[0];
+        document.getElementById("message").textContent =
+            "Player 1, it is your turn";
+    }
+}
+
+// Start game function
 function startGame() {
-    initPlayers(); // Reset player data
-    initPlayersWords(); // Initialize words for both players
+    initPlayers();
+    initPlayersWords();
     updateHangman(player1);
     updateHangman(player2);
-
-    // Reset counters in the UI
     document.getElementById("correct-1").textContent = "0";
     document.getElementById("wrong-1").textContent = "0";
     document.getElementById("correct-2").textContent = "0";
     document.getElementById("wrong-2").textContent = "0";
-
-    // Set Player 1 as the starting player
-    currentPlayer = players[0];
-    document.getElementById("message").textContent =
-        "Player 1, it is your turn";
-
-    // Enable input fields
+    currentPlayer = choosStartingPlayer(players);
+    if (currentPlayer == players[0]) {
+        // Sets the message to says whos turn it is
+        document.getElementById("message").textContent =
+            "Player 1, it is your turn";
+    } else if (currentPlayer == players[1]) {
+        document.getElementById("message").textContent =
+            "Player 2, it is your turn";
+    }
     document.getElementById("guess-button").disabled = false;
     document.getElementById("letter-input").disabled = false;
+    console.log(player1.name);
+    console.log(player2.name);
 }
 
-// Starta spelet när sidan laddas
-window.onload = startGame;
+window.onload = function () {
+    loadWordList();
+    startGame();
+};
 
-// Lägg till eventlyssnare på knappen för gissningar
+// Add event listener to guess button
 document.getElementById("guess-button").addEventListener("click", handleGuess);
 
-// Funktion för att slumpa startspelare
+// Choose starting player function
 function choosStartingPlayer(players) {
     const randomIndex = Math.floor(Math.random() * players.length);
     startingPlayer = players[randomIndex];
-    console.log(`${startingPlayer} börjer gissa!`);
+    console.log(`${startingPlayer.name} börjer gissa!`);
     return startingPlayer;
 }
-
-const players = ["player1", "player2"]; // Exempel på spelare
-let currentPlayer = choosStartingPlayer(players); //Slumpa och visa vem som börjar
-
-console.log(`Spelet börjar! ${currentPlayer} är först.`); // Hänga med i turordningen i spelet
 
 // Reveals the word with guessed letters or underscores
 function revealWord() {
