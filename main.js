@@ -51,6 +51,9 @@ let player1 = {
     addWrongGuess: function () {
         this.wrongGuesses++;
     },
+    addCorrectGuess: function () {
+        this.correctGuesses++;
+    },
 };
 let player2 = {
     name: "player2",
@@ -60,6 +63,9 @@ let player2 = {
     wrongGuesses: 0, // Tracks number of wrong guesses
     addWrongGuess: function () {
         this.wrongGuesses++;
+    },
+    addCorrectGuess: function () {
+        this.correctGuesses++;
     },
 };
 
@@ -238,11 +244,18 @@ function handleGuess() {
     ) {
         playerData.guessedLetters.push(guess);
         if (playerData.chosenWord.includes(guess)) {
+            playerData.addCorrectGuess();
             displayWord();
             updateHangman(playerData);
+            document.getElementById(
+                `correct-${currentPlayer === players[0] ? 1 : 2}`
+            ).textContent = playerData.correctGuesses; // Update correct counter in the DOM
         } else {
             alert("Fel gissning!");
             playerData.addWrongGuess();
+            document.getElementById(
+                `wrong-${currentPlayer === players[0] ? 1 : 2}`
+            ).textContent = playerData.wrongGuesses; // Update wrong counter in the DOM
             if (playerData.wrongGuesses >= maxWrongGuesses) {
                 document.getElementById(
                     `${currentPlayer}-message`
@@ -291,8 +304,6 @@ function startGame() {
     }
     document.getElementById("guess-button").disabled = false;
     document.getElementById("letter-input").disabled = false;
-    console.log(player1.name);
-    console.log(player2.name);
 }
 
 // Starta spelet när sidan laddas
