@@ -1,8 +1,7 @@
 // Word list with words the players will guess
-const wordList = [
+let wordList = [
     "banan",
     "äpple",
-    // "jordgubbe", // commented out due to a word being longer than hangman stages causes a bug
     "päron",
     "melon",
     "apelsin",
@@ -13,20 +12,22 @@ const wordList = [
     "oliv",
     "persika",
 ];
-// Optionscategory
-let option = {
+// Options category
+const option = {
     fruits: ["banan", "äpple", "druvor", "päron", "melon", "apelsin", "kiwi"],
     programming: ["php", "javascript", "python", "java"],
     movies: ["coco", "up", "prestige", "inception"],
     people: ["albert", "einstein", "alexander", "mahatma ghandi", "cleopatra"],
     countries: ["Sudan", "Egypt", "Sweden", "India", "Iraq"],
 };
-//Select Optionsctegory
+
+// Select Options Category
 function setCategoryAndStartGame() {
-    const SelectedCategory = document.getElementById("category-select").value;
-    wordList = option[SelectedCategory]; // Uppdatera ordlistan baserat på vald kategori
+    const selectedCategory = document.getElementById("category-select").value;
+    wordList = option[selectedCategory];
     startGame();
 }
+
 // Switch the current player
 function switchCurrentPlayer() {
     if (currentPlayer == players[0]) {
@@ -61,6 +62,7 @@ let player2 = {
         this.wrongGuesses++;
     },
 };
+
 const players = [player1, player2]; // A list players
 let currentPlayer;
 
@@ -68,49 +70,46 @@ let currentPlayer;
 function initPlayers() {
     player1 = {
         name: "player1",
-        chosenWord: [], //Randomizes the player's word
-        guessedLetters: [], // Stores the player's guessed letters
-        displayedWord: [], // Representation of the word, underscores or correctly guessed letters
-        wrongGuesses: 0, // Tracks number of wrong guesses
+        chosenWord: "",
+        guessedLetters: [],
+        displayedWord: [],
+        wrongGuesses: 0,
+        correctGuesses: 0,
         addWrongGuess: function () {
             this.wrongGuesses++;
+        },
+        addCorrectGuess: function () {
+            this.correctGuesses++;
         },
     };
     player2 = {
         name: "player2",
-        chosenWord: [], //Randomizes the player's word
-        guessedLetters: [], // Stores the player's guessed letters
-        displayedWord: [], // Representation of the word, underscores or correctly guessed letters
-        wrongGuesses: 0, // Tracks number of wrong guesses
+        chosenWord: "",
+        guessedLetters: [],
+        displayedWord: [],
+        wrongGuesses: 0,
+        correctGuesses: 0,
         addWrongGuess: function () {
             this.wrongGuesses++;
+        },
+        addCorrectGuess: function () {
+            this.correctGuesses++;
         },
     };
 }
 
-// Initialize each players displayedWord
+// Initialize players' words
 function initPlayersWords() {
     player1.chosenWord = wordList[Math.floor(Math.random() * wordList.length)];
-    player1.displayedWord = player1.chosenWord
-        .split("")
-        .map((letter) =>
-            player1.guessedLetters.includes(letter) ? letter : "_"
-        );
-    while (true) {
+    player1.displayedWord = Array(player1.chosenWord.length).fill("_");
+    do {
         player2.chosenWord =
             wordList[Math.floor(Math.random() * wordList.length)];
-        if (
-            player2.chosenWord != player1.chosenWord &&
-            player2.chosenWord.length == player1.chosenWord.length
-        ) {
-            break;
-        }
-    }
-    player2.displayedWord = player2.chosenWord
-        .split("")
-        .map((letter) =>
-            player2.guessedLetters.includes(letter) ? letter : "_"
-        );
+    } while (
+        player2.chosenWord === player1.chosenWord ||
+        player2.chosenWord.length !== player1.chosenWord.length
+    );
+    player2.displayedWord = Array(player2.chosenWord.length).fill("_");
     document.getElementById("player1-word-display").textContent =
         player1.displayedWord.join(" ");
     document.getElementById("player2-word-display").textContent =
@@ -227,6 +226,7 @@ function displayWord() {
         playerData.displayedWord.join(" ");
 }
 
+// Handle player guess
 function handleGuess() {
     let playerData = getCurrentPlayerData(currentPlayer); // Fetch current player data
     const letterInput = document.getElementById("letter-input");
@@ -276,8 +276,11 @@ function startGame() {
     initPlayersWords();
     updateHangman(player1);
     updateHangman(player2);
-    currentPlayer = choosStartingPlayer(players); //Slumpa och visa vem som börjar
-
+    document.getElementById("correct-1").textContent = "0";
+    document.getElementById("wrong-1").textContent = "0";
+    document.getElementById("correct-2").textContent = "0";
+    document.getElementById("wrong-2").textContent = "0";
+    currentPlayer = choosStartingPlayer(players);
     if (currentPlayer == players[0]) {
         // Sets the message to says whos turn it is
         document.getElementById("message").textContent =
@@ -288,15 +291,20 @@ function startGame() {
     }
     document.getElementById("guess-button").disabled = false;
     document.getElementById("letter-input").disabled = false;
+    console.log(player1.name);
+    console.log(player2.name);
 }
 
 // Starta spelet när sidan laddas
-window.onload = startGame();
+window.onload = function () {
+    loadWordList();
+    startGame();
+};
 
-// Lägg till eventlyssnare på knappen för gissningar
+// Add event listener to guess button
 document.getElementById("guess-button").addEventListener("click", handleGuess);
 
-// Funktion för att slumpa startspelare
+// Choose starting player function
 function choosStartingPlayer(players) {
     const randomIndex = Math.floor(Math.random() * players.length);
     startingPlayer = players[randomIndex];
